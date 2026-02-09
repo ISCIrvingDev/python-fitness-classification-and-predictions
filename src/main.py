@@ -12,7 +12,7 @@
 #     prediction = model.predict(df)
 #     return {"calorias_quemadas": prediction[0]}
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from src.schemas.schemas import (
     CaloriesPredictionRequest,
     CaloriesPredictionResponse,
@@ -20,6 +20,7 @@ from src.schemas.schemas import (
     FitnessLevelPredictionResponse
 )
 from src.services.load_model import CaloriesModel, FitnessLevelModel
+from src.services.security import validate_api_key
 
 app = FastAPI(
     title="Fitness ML API",
@@ -41,7 +42,8 @@ def health_check():
 
 @app.post(
     "/predict/calories",
-    response_model=CaloriesPredictionResponse
+    response_model=CaloriesPredictionResponse,
+    dependencies=[Depends(validate_api_key)]
 )
 def predict_calories(
     request: CaloriesPredictionRequest
@@ -60,7 +62,8 @@ def predict_calories(
 
 @app.post(
     "/predict/fitness-level",
-    response_model=FitnessLevelPredictionResponse
+    response_model=FitnessLevelPredictionResponse,
+    dependencies=[Depends(validate_api_key)]
 )
 def predict_fitness_level(request: FitnessLevelPredictionRequest):
     """

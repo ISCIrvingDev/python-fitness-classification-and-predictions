@@ -18,8 +18,8 @@ venv.bak/
 logs/
 *.log
 .env
-.env.*
-.env*.*
+# .env.*
+# .env*.*
 *.sqlite
 
 # Sistemas operativos
