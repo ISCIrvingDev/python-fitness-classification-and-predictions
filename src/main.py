@@ -15,19 +15,21 @@
 from fastapi import FastAPI
 from src.schemas.schemas import (
     CaloriesPredictionRequest,
-    CaloriesPredictionResponse
+    CaloriesPredictionResponse,
+    FitnessLevelPredictionRequest,
+    FitnessLevelPredictionResponse
 )
-from src.services.load_model import CaloriesModel
+from src.services.load_model import CaloriesModel, FitnessLevelModel
 
 app = FastAPI(
     title="Fitness ML API",
-    description="API para predicción de calorías quemadas",
-    version="1.0.0"
+    description="API para predicción de calorías quemadas y nivel de aptitud fisica",
+    version="1.1.0"
 )
 
 # Cargar modelo al iniciar
 calories_model = CaloriesModel()
-
+fitness_model = FitnessLevelModel()
 
 @app.get("/")
 def health_check():
@@ -51,8 +53,27 @@ def predict_calories(
     :type request: CaloriesPredictionRequest
     """
     prediction = calories_model.predict(request.dict())
+
     return CaloriesPredictionResponse(
         predicted_calories=round(prediction, 2)
+    )
+
+@app.post(
+    "/predict/fitness-level",
+    response_model=FitnessLevelPredictionResponse
+)
+def predict_fitness_level(request: FitnessLevelPredictionRequest):
+    """
+    Docstring for predict_fitness_level
+
+    :param request: Description
+    :type request: FitnessLevelPredictionRequest
+    """
+    level_code, level_name = fitness_model.predict(request.dict())
+
+    return FitnessLevelPredictionResponse(
+        level_code=level_code,
+        level_name=level_name
     )
 
 print("Servidor corriendo en: http://127.0.0.1:8000/docs")
