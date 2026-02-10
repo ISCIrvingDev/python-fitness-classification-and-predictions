@@ -13,10 +13,10 @@
 #     return {"calorias_quemadas": prediction[0]}
 
 from fastapi import FastAPI, Depends, Request
+from fastapi.responses import JSONResponse
 
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
-from fastapi.responses import JSONResponse
 
 from src.schemas.schemas import (
     CaloriesPredictionRequest,
